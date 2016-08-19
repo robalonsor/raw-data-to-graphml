@@ -1,3 +1,8 @@
+# This script takes the DBLP file, and given a list of conferences and years
+# it outputs a graphml file containg requested info
+# The graphml has two attributes g1 and g2, where g1 represents the conf. for years <yearGraph1> 
+# and g2 represents conf. for years <yearGraph2>
+
 import tempfile
 import os
 import sys
@@ -41,7 +46,7 @@ for line in _file:
  		for c in conferences:
  			if c in s:
  				f=1
- 		if f == 0:
+ 		if f == 0: # the string does not contain a conf.e from the list conferences, so del and continue with for
  			s=""
  			continue
  		f = 0
@@ -50,25 +55,27 @@ for line in _file:
  			if '<year>'+y in s:
  				f=1
  				break
- 		if f==1: # ie this year is in the string
+ 		if f==1: # ie this year is in the string, so add it to the graph 1 and continue with for
  			sG1+=s
  			s=""
  			continue
- 		f=0
- 		for y in yearGraph2:
+
+ 		f=0 # reseting flag
+ 		for y in yearGraph2: # now looking for the same year in the other collection of years
  			if '<year>'+y in s:
  				f = 1
  				break
- 		if f ==1:
+ 		if f ==1: # the string coians the year, so add it to the graph 2
  			sG2+=s
  			s=""
  			continue
  		#exit()
  		s=""
  		
-
+# closing big DBLP file
 _file.close()
 
+# storing the 'interesting' portion of DBLP in temporal files
 f1 = open("test1.txt","w")
 f2 = open("test2.txt", "w")
 
@@ -76,7 +83,7 @@ f1.write(sG1)
 f2.write(sG2)
 f1.close()
 f2.close()
-
+# constructing the graph 1
 fileGraph1 = open("test1.txt")
 s=""
 flag = 0
@@ -142,7 +149,7 @@ for line in fileGraph2:
 fileGraph2.close()
 os.remove("test2.txt")
 
-
+# saving a dictionary that contains the node ID for the graph and the author name
 nodeList = []
 edgeListG1 = []
 edgeListG2 = []
@@ -157,7 +164,7 @@ for i in authors:
 f = open("dictionary"+fOut+".txt","w")
 f.write(s)
 f.close()
-##
+## creating the set of edges for graph 1 and graph 2
 for e in edgesG1:
 	u = nodeList.index(e[0])
 	v = nodeList.index(e[1])
@@ -185,6 +192,7 @@ for e in edgesG2:
 		print "Error", e[0],e[1]
 		exit()
 
+#determine edges that are in both graphs
 intersectionEdges = [] # collaborations in both conferences
 
 for e in edgeListG1:
@@ -202,12 +210,12 @@ for i in range(len(nodeList)):
 	s+='<node id="'+str(i)+'"/>\n'
 
 for i in range(len(edgeListG1)):
-	s+='<edge source="'+str(edgeListG1[i][0])+'" target="'+str(edgeListG1[i][1])+'" g1="10"/>\n'
+	s+='<edge source="'+str(edgeListG1[i][0])+'" target="'+str(edgeListG1[i][1])+'" g1="1"/>\n'
 
 for i in range(len(edgeListG2)):
-	s+='<edge source="'+str(edgeListG2[i][0])+'" target="'+str(edgeListG2[i][1])+'" g2="20"/>\n'
+	s+='<edge source="'+str(edgeListG2[i][0])+'" target="'+str(edgeListG2[i][1])+'" g2="2"/>\n'
 for i in range(len(intersectionEdges)):
-	s+='<edge source="'+str(intersectionEdges[i][0])+'" target="'+str(intersectionEdges[i][1])+'" g1="10" g2="20"/>\n'
+	s+='<edge source="'+str(intersectionEdges[i][0])+'" target="'+str(intersectionEdges[i][1])+'" g1="1" g2="2"/>\n'
 
 s+= '</graph>\n</graphml>'
 
