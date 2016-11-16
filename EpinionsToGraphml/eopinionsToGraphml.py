@@ -87,6 +87,8 @@ for line in f:
 	typeEdges.append(data[2])
 	edges.append(edge)
 	timestamps.append(line.split()[3])
+	if node1 == "98305" or node2 == "98305":
+		print "Found", edge
 
 	nodes.add(node1)
 	nodes.add(node2)
@@ -96,10 +98,7 @@ for line in f:
 	#	nodes.append(node2)
 f.close()
 
-#print "x"
-#exit()
 nodes = list(nodes)
-
 globalEdges = list(edges)
 
 
@@ -118,40 +117,49 @@ globalEdges = list(edges)
 
 s = ""
 
-setTimestampG1 = 979081200 
-setTimestampG2 = 991346400
+# setTimestamp1 = 979081200 
+# setTimestamp2 = 991346400
 
-tm = 991432800
-tm2 = 1009753200
+setTimestamp1 = 980987708 # feb-01-2001  
+setTimestamp2 = 988675148 # apr-30-2001
+tmG2_1 = 988675208 # may-01-2001
+#tmG2_2 = 996623948 # jul-31-2001
+tmG2_2 = 1009843200 # jan-01-2002 00:00:00.00 hrs
+
+# tmG2_1 = 991432800
+# tmG2_2 = 1009753200
 setEdgesG1 = set()
 setEdgesG2 = set()
 
 for i in range(len(timestamps)):
 
-	# if timestamps[i] in setTimestampG1 and typeEdges[i] == "1": # if the timestamp is for graph 1
+	# if timestamps[i] in setTimestamp1 and typeEdges[i] == "1": # if the timestamp is for graph 1
 	# 	setEdgesG1.append(edges[i])
-	# if timestamps[i] in setTimestampG2 and typeEdges[i] == "1":
+	# if timestamps[i] in setTimestamp2 and typeEdges[i] == "1":
 	# 	setEdgesG2.append(edges[i])
 	#print timestamps[i], setEdgesG1
 
-	if int(timestamps[i]) >= setTimestampG1 and int(timestamps[i])<= setTimestampG2 and typeEdges[i] == "1": # if the timestamp is for graph 1
+	if int(timestamps[i]) >= setTimestamp1 and int(timestamps[i])<= setTimestamp2 and typeEdges[i] == "1": # if the timestamp is for graph 1
 		# setEdgesG1.append(edges[i])
 		setEdgesG1.add((edges[i][0],edges[i][1]))
+		if edges[i][0] == "98305" or  edges[i][1] == "98305":
+			print edges[i][0],  "98305"
+			print edges[i][1],  "98305"
+			print edges[i]
+
 		continue
 		#print "adasd"
-	if int(timestamps[i]) >= tm and int(timestamps[i])<= tm2 and typeEdges[i] == "-1": # if the timestamp is for graph 1
+	if int(timestamps[i]) >= tmG2_1 and int(timestamps[i])<= tmG2_2 and typeEdges[i] == "-1": # if the timestamp is for graph 2
 		# setEdgesG2.append(edges[i])
 		setEdgesG2.add((edges[i][0],edges[i][1]))
 
-	#if timestamps[i] in setTimestampG2 and typeEdges[i] == "1":
+	#if timestamps[i] in setTimestamp2 and typeEdges[i] == "1":
 	#	setEdgesG2.append(edges[i])
 
 print len(setEdgesG1)
 print len(setEdgesG2)
 
 #exit()
-
-
 nodes = set()
 
 while len(setEdgesG1) >0:
@@ -159,6 +167,10 @@ while len(setEdgesG1) >0:
 	# print "->",e
 	# print setEdgesG2
 	# print "-"
+	if e[0] == "98305" or e[1] == "98305":
+		print " ----- "
+		print "XXXX"
+		print e
 	nodes.add(e[0])
 	nodes.add(e[1])
 	s+='<edge source="'+e[0]+'" target="'+e[1]+'" '
@@ -170,37 +182,8 @@ while len(setEdgesG1) >0:
 		s+='g2="20"'
 		setEdgesG2.discard((e[0],e[1]))
 		setEdgesG2.discard((e[1],e[0]))
-	# j = 0
-	# flagExit = 0
-	# while len(setEdgesG2) > 0 and flagExit == 0:
-	# 	# print setEdgesG2[j]
-	# 	if [e[0],e[1]] == setEdgesG2[j]:
-	# 		# print [e[0],e[1]]
-	# 		if posFlag == 0:
-	# 			s+='g2="20" '
-	# 			posFlag = 1
-	# 		setEdgesG2.pop(j)
-	# 		j-=1
-	# 	else:
-	# 		if [e[1],e[0]] == setEdgesG2[j]:
-	# 			# print [e[1],e[0]],"/"
-	# 			if posFlag == 0:
-	# 				s+='g2="20" '
-	# 				posFlag = 1
-	# 			setEdgesG2.pop(j)
-	# 			j-=1
-
-	# 	j+=1
-	# 	if j >= len(setEdgesG2):
-	# 		flagExit=1
-	
-	s+='/>\n'
-	# deleteOcurrences(e,setEdgesG1)
-	# print setEdgesG2
-	# print "-end"
-	#exit()
+	s+='/>\n'	
 	pass
-
 
 # for i in range(len(setEdgesG2)):
 for item in setEdgesG2:
@@ -216,7 +199,8 @@ for item in setEdgesG2:
 #print s
 nodes = list(nodes)
 sNodes = ""
-for i in range(0,len(nodes)):
+#for i in range(0,len(nodes)):
+for i in nodes:
 	sNodes+='<node id="'+str(i)+'"/>\n'
 	
 
