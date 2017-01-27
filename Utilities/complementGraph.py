@@ -10,8 +10,8 @@
 
 import itertools
 
-file_name = 'Arxiv_35.graphml'
-dimension = 'citation'
+file_name = 'numV_c10_50.graphml'
+dimension = 'att1'
 
 E = set()  # set of edges in dimension <dimension>
 V = set()  # set of vertices in dimension <dimension>
