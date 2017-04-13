@@ -13,9 +13,10 @@ for line in f:
 	data = line.split()
 	if data[2] == '0':
 		continue
-	edge = [data[0],data[1]]
+	edge = [int(data[0]),int(data[1])]
 	edge.sort()
 	edges_graph1.append(edge)
+
 f.close()
 
 f_name = 'datasets/Friendship-network_data_2013.csv'
@@ -23,21 +24,25 @@ f = open(f_name)
 edges_graph2 = []
 for line in f:
 	data = line.split()
-	edge = [data[0],data[1]]
+	edge = [int(data[0]),int(data[1])]
 	edge.sort()
-	edges_graph2.append(data)
+	# edges_graph2.append(edge)
+	if edge not in edges_graph2:
+		edges_graph2.append(edge)
+		
 f.close()
 nodes = set()
 for i in range(len(edges_graph1)):
-		s+='<edge source="'+str(edges_graph1[i][0])+'" target="'+str(edges_graph1[i][1])+'" '
-		s+='facebook="1" '
-		if edges_graph1[i] in edges_graph2:
-			s+='friends="1" '
-			edges_graph2.pop(edges_graph2.index(edges_graph1[i]))
-		s+='/>\n'
-		nodes.add(edges_graph1[i][0])
-		nodes.add(edges_graph1[i][1])
-
+	s+='<edge source="'+str(edges_graph1[i][0])+'" target="'+str(edges_graph1[i][1])+'" '
+	s+='facebook="1" '
+	if edges_graph1[i] in edges_graph2:
+		s+='friends="1" '
+		edges_graph2.pop(edges_graph2.index(edges_graph1[i]))
+	s+='/>\n'
+	nodes.add(edges_graph1[i][0])
+	nodes.add(edges_graph1[i][1])
+		# print(edges_graph1[i], nodes)
+		# exit()
 for i in range(len(edges_graph2)):
 	s+='<edge source="'+str(edges_graph2[i][0])+'" target="'+str(edges_graph2[i][1])+'" '
 	s+='friends="1" '
@@ -46,9 +51,11 @@ for i in range(len(edges_graph2)):
 	nodes.add(edges_graph2[i][0])
 	nodes.add(edges_graph2[i][1])
 
-for i in range(0,len(nodes)):
-		sNodes+='<node id="'+str(i)+'"/>\n'
-
+for i in nodes:
+	# if i == 117:
+	# 	print("as")
+	# 	continue
+	sNodes+='<node id="'+str(i)+'"/>\n'
 f = open('contact_face_vs_friend.graphml','w')
 f.write(sInitial+sNodes+s+sFinal)
 f.close()
