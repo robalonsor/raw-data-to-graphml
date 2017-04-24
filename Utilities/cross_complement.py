@@ -1,9 +1,18 @@
 #!/usr/bin python3
 
-# This script creates the complement for each dimension
-# then it creates two files 1) file containing a graph with G1 and G'2
-# and 2) file containing a graph with G2 and G'1
-# February 2017
+# This script creates the complement for each graph in graphml format
+# then, it creates two property files G1 vs comp_G2 and G2 vs comp_G1, respectively. 
+# next, it applies MiMAG to both property files
+# next, after MiMAG has finished it merges resutls from both experiments
+# the final result is in a *.summary.found file
+# For example,
+# python bgb_two_att.graphml att2 att34 4 0.5
+
+# will run the complement graph experiment (as described in the paper) considering
+# the bgb dataset, the graphs att2 and att34; MiMAG will look for cross-graph quasi-cliques
+# of minium size 4 with minium density of 0.5
+# April 2017
+
 
 import itertools
 import time  # Only behaves as expected in Linux
